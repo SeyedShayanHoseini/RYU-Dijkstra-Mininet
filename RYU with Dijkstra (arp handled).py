@@ -57,68 +57,10 @@ found_paths = [[]]  # A list of found paths for a pair of nodes. This is to prev
 is_build_topology = True
 app_termination = True
 
-############################# Cplex variables ###############################
-oplrun_executable = r"C:\Program Files\IBM\ILOG\CPLEX_Enterprise_Server129\CPLEX_Studio\opl\bin\x64_win64\oplrun.exe"
-opl_model_file = r"C:\Users\shaya\opl\offloading(cap)\offloading(cap).mod"
-opl_data_file = r"C:\Users\shaya\opl\offloading(cap)\offloading(cap).dat"
-
-
-# output_file = r"C:\Users\shaya\opl\offloading(cap)\output.txt"
-
 
 def set_sleep(seconds):
     # sleep(seconds)
     return
-
-
-# def print_topology(links, datapth_list, switch_list):
-#     for dpid_src, dpid_dst, src_port, dst_port in links:
-#         print(
-#             f'{bcolors.OKBLUE}The link from switch \"{dpid_src}\" to switch \"{dpid_dst}\" :'
-#             f'{bcolors.ENDC}{bcolors.OKCYAN} port {src_port} -> port {dst_port}{bcolors.ENDC}')
-#     # print(f'\n{bcolors.BOLD}Datapath List: {datapth_list}{bcolors.ENDC}\n')
-#     for switch in switch_list:
-#         print(f'The switch id: {switch.dp.id} has dp: {switch.dp}')
-
-# This function will reformat the output produced by Cplex to a list. But this is all in string.
-def format_input_string(input_string):
-    formatted_str = ""
-    brackets = 0
-    previous = None
-    for i, char in enumerate(input_string):
-        if char == '[':
-            if previous == ']':
-                formatted_str += ',['
-                brackets += 1
-                previous = None
-            else:
-                brackets += 1
-                formatted_str += char
-        elif char == ']':
-            previous = char
-            brackets -= 1
-            formatted_str += char
-        elif char == ' ':
-            formatted_str += ','
-        else:
-            formatted_str += char
-    return formatted_str
-
-
-# This function will call Cplex to solve the problem. Cplex should be installed on your windows.
-def run_cplex():
-    output = subprocess.run([oplrun_executable, opl_model_file, opl_data_file], capture_output=True)
-    # print("Standard Output: ", output.stdout.decode())
-    output_str = output.stdout.decode()
-    start_index = output_str.find("Start")
-    end_index = output_str.find("delay_1")
-    cropped_string = output_str[start_index + 5:end_index]  # Getting the decision variable values
-    cropped_string = ''.join(line.strip() for line in cropped_string.split('\n'))
-    # reformat the output
-    output_list = format_input_string(cropped_string)
-    # I used ast to convert the reformatted string to an actual list.
-    output_list = ast.literal_eval(output_list)
-
 
 def minimum_distance(distance, Q):
     min = float('Inf')
@@ -132,7 +74,6 @@ def minimum_distance(distance, Q):
 
 def get_path(graf, src, dst, first_port, final_port):
     # Dijkstra's implementation
-    # print "get_path is called, src=",src," dst=",dst, " first_port=", first_port, " final_port=", final_port
     distance = {}
     previous = {}
     for dpid in switch_dpid_list:
@@ -194,20 +135,6 @@ class RoutingAPP(app_manager.RyuApp):
         # ryu.lib.hub.spawn(self.draw_network_topology)
         self.switch_count = 0
         self.network_topology = {}
-
-    # def draw_network_topology(self):
-    #     sleep(3)
-    #     G = nx.Graph()
-    #     for src, links in main_topology.items():
-    #         for dst, weight in links.items():
-    #             if weight != float('inf'):
-    #                 G.add_edge(src, dst, weight=weight)
-    #
-    #     pos = nx.spring_layout(G)
-    #     nx.draw(G, pos, with_labels=True, node_color='skyblue', node_size=1000, edge_color='gray', width=2)
-    #     edge_labels = {(u, v): d['weight'] for u, v, d in G.edges(data=True)}
-    #     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-    #     plt.show()
 
     # A handler which would be triggered if a switch
     # got connected to the controller. We used this func to add a table miss flow for each switch. The message is named
