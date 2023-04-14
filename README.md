@@ -1,7 +1,7 @@
-# RYU-Dijkstra-Mininet
+# RYU-Dijkstra-Mininet (ARP is completely handled)
 Dijkstra implementation source: https://github.com/aidakrr/dijkstra-SDN-Ryu/blob/master/spryu_dijkstra.py
 
-Hi guys. This code can read any valid Mininet topology (Tree, Single, Linear, and any custom topology) and use Dijkstra to find the shortest path between two nodes. The ARP request and reply packets are completely handled. No extra loops for ARP handling since there is a mehcanism to avoid that (Read the ARP_handler function and you will find how :D).
+Hi guys. This code uses the L2 switching logic and can read any valid Mininet topology (Tree, Single, Linear, and any custom topology) and use Dijkstra to find the shortest path between two nodes. The ARP request and reply packets are completely handled. No extra loops for ARP handling since there is a mehcanism to avoid that (Read the ARP_handler function and you will find how :D).
 
 There are plenty of *print* commands in the code that are commented. Use them to see the logs and learn what this code is doing. Also there are some useful comments describing the important facts about OpenFlow and RYU. I suggets visiting the RYU documentation before getting your hands on this one.
 
